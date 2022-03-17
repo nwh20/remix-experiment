@@ -1,0 +1,2640 @@
+{
+  "components": {
+    "responses": {},
+    "schemas": {
+      "NotFound": {
+        "description": "NotFound",
+        "example": {
+          "errors": {
+            "message": "partner not found"
+          }
+        },
+        "properties": {
+          "errors": {
+            "description": "The errors of each field",
+            "type": "object"
+          }
+        },
+        "title": "NotFound",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.ErrorSchemas.NotFound"
+      },
+      "UploadPersonDocumentRequest": {
+        "description": "Body for upload person document",
+        "properties": {
+          "image_base64": {
+            "description": "Image Base 64 encoded",
+            "example": "QUJD",
+            "type": "string"
+          },
+          "person_id": {
+            "description": "Person UUID",
+            "example": "ffe1cd43-1f43-47f5-afa7-438d5baef783",
+            "format": "uuid",
+            "type": "string"
+          },
+          "type": {
+            "description": "Document type",
+            "enum": ["ID_FRONT", "ID_BACK", "PASSPORT_FRONT", "DRIVER_LICENSE_FRONT", "DRIVER_LICENSE_BACK"],
+            "example": "DRIVER_LICENSE_BACK",
+            "type": "string"
+          }
+        },
+        "required": ["person_id", "image_base64", "type"],
+        "title": "UploadPersonDocumentRequest",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.PeopleRequests.UploadPersonDocumentRequest"
+      },
+      "PersonDocument": {
+        "description": "PersonDocument",
+        "properties": {
+          "id": {
+            "description": "Person document UUID",
+            "example": "78868a92-553e-470d-9ae5-bc30a6655109",
+            "format": "uuid",
+            "readOnly": true,
+            "type": "string"
+          },
+          "path": {
+            "description": "Filepath on s3",
+            "example": "https://s3.amazonaws.com/test/ffe1cd43-1f43-47f5-afa7-438d5baef783/store_id_ffe1cd43-1f43-47f5-afa7-438d5baef783.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJM35PWKL5YZ5PUZQ%2F20210816%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210816T192959Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=a599c10231fae8956bbc2e9eab2109c7c85963d7dfd8d0223db5b41db9006c9b",
+            "type": "string"
+          },
+          "person_id": {
+            "description": "Person UUID",
+            "example": "ffe1cd43-1f43-47f5-afa7-438d5baef783",
+            "format": "uuid",
+            "type": "string"
+          },
+          "type": {
+            "description": "Type of the document",
+            "enum": ["PASSPORT_FRONT", "ID_FRONT", "ID_BACK", "DRIVER_LICENSE_FRONT", "DRIVER_LICENSE_BACK"],
+            "example": "DRIVER_LICENSE_FRONT",
+            "type": "string"
+          }
+        },
+        "required": ["path", "type"],
+        "title": "PersonDocument",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.PeopleSchemas.PersonDocument"
+      },
+      "Company": {
+        "description": "Company",
+        "properties": {
+          "authorizer": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Person"
+              }
+            ],
+            "readOnly": true
+          },
+          "authorizer_id": {
+            "example": "4b8fc17c-89e7-43b8-8f19-be6c329e1c5f",
+            "format": "uuid",
+            "nullable": false,
+            "type": "string",
+            "writeOnly": true
+          },
+          "billing_email": {
+            "description": "Billing E-mail",
+            "example": "company@saltpay.co",
+            "nullable": true,
+            "type": "string"
+          },
+          "charging_bank_account": {
+            "$ref": "#/components/schemas/ChargingBankAccount"
+          },
+          "id": {
+            "description": "Company ID",
+            "example": "78868a92-553e-470d-9ae5-bc30a6655109",
+            "format": "uuid",
+            "readOnly": true,
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Datetime of creation (ISO 8601)",
+            "format": "date-time",
+            "readOnly": true,
+            "type": "string"
+          },
+          "legal_structure": {
+            "description": "LIMITED or SOLE_TRADER",
+            "enum": ["LIMITED", "SOLE_TRADER"],
+            "example": "LIMITED",
+            "type": "string"
+          },
+          "registered_address": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "description": "Legal business registered address",
+            "type": "object"
+          },
+          "registered_name": {
+            "description": "Registration business name",
+            "example": "Company Name",
+            "type": "string"
+          },
+          "registered_number": {
+            "description": "Registration business number. Must be unique per country",
+            "example": "123456789",
+            "type": "string"
+          },
+          "shareholders": {
+            "items": {
+              "$ref": "#/components/schemas/Shareholder"
+            },
+            "type": "array"
+          },
+          "store_count": {
+            "description": "Number of registered stores",
+            "example": 3,
+            "nullable": true,
+            "readOnly": true,
+            "type": "integer"
+          },
+          "updated_at": {
+            "description": "Datetime of last update (ISO 8601)",
+            "format": "date-time",
+            "readOnly": true,
+            "type": "string"
+          },
+          "vat_number": {
+            "description": "Value Added Tax (VAT)",
+            "example": "IS123456",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "title": "Company",
+        "type": "object"
+      },
+      "PersonResponse": {
+        "additionalProperties": false,
+        "description": "Person Response",
+        "properties": {
+          "person": {
+            "$ref": "#/components/schemas/Person"
+          }
+        },
+        "required": ["person"],
+        "title": "PersonResponse",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.PeopleResponses.PersonResponse"
+      },
+      "Person": {
+        "description": "The Person data",
+        "properties": {
+          "address": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "nullable": true,
+            "type": "object"
+          },
+          "birth_date": {
+            "description": "Person's birth date following the `yyyy-MM-dd` format (Date, ISO 8601)",
+            "example": "1991-09-24",
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "country": {
+            "description": "Country code (ISO 3166-1 alpha-2) of the person's national id issuer. (country cannot be null if national_id_number is presented)",
+            "example": "PT",
+            "maxLength": 2,
+            "minLength": 2,
+            "nullable": true,
+            "type": "string"
+          },
+          "documents": {
+            "description": "Person Documents",
+            "items": {
+              "$ref": "#/components/schemas/PersonDocument"
+            },
+            "nullable": true,
+            "readOnly": true,
+            "type": "array"
+          },
+          "email": {
+            "description": "Email address",
+            "example": "firstlast@email.com",
+            "format": "email",
+            "nullable": true,
+            "type": "string"
+          },
+          "first_name": {
+            "description": "First Name",
+            "example": "First",
+            "type": "string"
+          },
+          "id": {
+            "description": "Person UUID",
+            "example": "ffe1cd43-1f43-47f5-afa7-438d5baef783",
+            "format": "uuid",
+            "readOnly": true,
+            "type": "string"
+          },
+          "last_name": {
+            "description": "Person last name",
+            "example": "Last",
+            "type": "string"
+          },
+          "locale": {
+            "$ref": "#/components/schemas/Locale"
+          },
+          "middle_name": {
+            "description": "Person middle name",
+            "example": "Middle",
+            "nullable": true,
+            "type": "string"
+          },
+          "national_id_number": {
+            "description": "Person national ID",
+            "example": "12345678991",
+            "nullable": true,
+            "type": "string"
+          },
+          "phone": {
+            "description": "Phone number with the `+` sign and the country code (ITU-T E.164)",
+            "example": "+351112345678",
+            "nullable": true,
+            "pattern": "^\\+[0-9]{6,15}$",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "User UUID",
+            "example": "ffe1cd43-1f43-47f5-afa7-438d5baef783",
+            "format": "uuid",
+            "nullable": true,
+            "readOnly": true,
+            "type": "string"
+          }
+        },
+        "title": "Person",
+        "type": "object"
+      },
+      "Store": {
+        "description": "Store",
+        "properties": {
+          "active": {
+            "description": "Is the Store Active?",
+            "example": true,
+            "type": "boolean"
+          },
+          "billing_email": {
+            "description": "Billing E-mail",
+            "example": "store@saltpay.co",
+            "nullable": true,
+            "type": "string"
+          },
+          "charging_bank_account": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ChargingBankAccount"
+              }
+            ],
+            "type": "object"
+          },
+          "company_id": {
+            "example": "ffe1cd43-1f43-47f5-afa7-438d5baef783",
+            "format": "uuid",
+            "nullable": false,
+            "type": "string",
+            "writeOnly": true
+          },
+          "country": {
+            "description": "Country code (ISO 3166-1 alpha-2)",
+            "example": "IS",
+            "maxLength": 2,
+            "minLength": 2,
+            "nullable": true,
+            "type": "string"
+          },
+          "delivery_address": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "description": "Delivery Adrress",
+            "nullable": true,
+            "type": "object"
+          },
+          "id": {
+            "description": "Store ID",
+            "example": "1004f1fc-be52-4405-9d4f-c60f0d8e990a",
+            "format": "uuid",
+            "readOnly": true,
+            "type": "string"
+          },
+          "inserted_at": {
+            "description": "Datetime of creation (ISO 8601)",
+            "format": "date-time",
+            "readOnly": true,
+            "type": "string"
+          },
+          "mcc": {
+            "description": "Four-digit number listed in ISO 18245 for retail financial services",
+            "example": "0742",
+            "nullable": false,
+            "type": "string"
+          },
+          "name": {
+            "description": "Store Name",
+            "example": "Store Name",
+            "minLength": 2,
+            "type": "string"
+          },
+          "phone": {
+            "description": "Phone number with the `+` sign and the country code (ITU-T E.164)",
+            "example": "+4435212320",
+            "nullable": true,
+            "pattern": "^\\+[0-9]{6,15}$",
+            "type": "string"
+          },
+          "short_id": {
+            "description": "Store short id. It is composed of a 2-digit country code followed by 7 digits and a checksum digit",
+            "example": "IS12345675",
+            "readOnly": true,
+            "type": "string"
+          },
+          "store_scheme": {
+            "anyOf": [
+              {
+                "description": "Required fields for a digital store",
+                "properties": {
+                  "address": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Address"
+                      }
+                    ],
+                    "description": "Address",
+                    "example": {
+                      "city": "Some City",
+                      "country": "IS",
+                      "id": "78868a92-553e-470d-9ae5-bc30a6655109",
+                      "state": "Some State",
+                      "street_address_line_1": "Street A",
+                      "street_address_line_2": "Building B",
+                      "street_address_line_3": "Some additional data",
+                      "zipcode": "24320000"
+                    },
+                    "nullable": true,
+                    "type": "object"
+                  },
+                  "store_type": {
+                    "description": "Supported store type",
+                    "enum": ["DIGITAL"],
+                    "example": "DIGITAL",
+                    "type": "string"
+                  },
+                  "url": {
+                    "description": "URL for the store's website",
+                    "example": "https://my-store.com",
+                    "type": "string"
+                  }
+                },
+                "required": ["store_type", "url"],
+                "title": "DigitalStoreScheme",
+                "type": "object",
+                "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresSchemas.DIGITAL"
+              },
+              {
+                "description": "Required fields for a physical store",
+                "properties": {
+                  "address": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Address"
+                      }
+                    ],
+                    "description": "Address",
+                    "example": {
+                      "city": "Some City",
+                      "country": "IS",
+                      "id": "78868a92-553e-470d-9ae5-bc30a6655109",
+                      "state": "Some State",
+                      "street_address_line_1": "Street A",
+                      "street_address_line_2": "Building B",
+                      "street_address_line_3": "Some additional data",
+                      "zipcode": "24320000"
+                    },
+                    "type": "object"
+                  },
+                  "store_type": {
+                    "description": "Supported store type",
+                    "enum": ["PHYSICAL"],
+                    "example": "PHYSICAL",
+                    "type": "string"
+                  },
+                  "url": {
+                    "description": "URL for the store's website",
+                    "example": "https://my-store.com",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": ["store_type", "address"],
+                "title": "PhysicalStoreScheme",
+                "type": "object",
+                "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresSchemas.PHYSICAL"
+              }
+            ],
+            "description": "Supported store scheme",
+            "discriminator": {
+              "mapping": {
+                "DIGITAL": "#/components/schemas/DigitalStoreScheme",
+                "PHYSICAL": "#/components/schemas/PhysicalStoreScheme"
+              },
+              "propertyName": "store_type"
+            },
+            "required": ["store_type"],
+            "title": "StoreScheme",
+            "type": "object"
+          },
+          "updated_at": {
+            "description": "Datetime of last update (ISO 8601)",
+            "format": "date-time",
+            "readOnly": true,
+            "type": "string"
+          }
+        },
+        "title": "Store",
+        "type": "object"
+      },
+      "Locale": {
+        "description": "Defines the user's language, date & time formatting convention, monetary & decimal formatting conventions.",
+        "enum": [
+          "af-ZA",
+          "am-ET",
+          "be-BY",
+          "bg-BG",
+          "ca-ES",
+          "cs-CZ",
+          "da-DK",
+          "de-AT",
+          "de-CH",
+          "de-DE",
+          "el-GR",
+          "en-AU",
+          "en-CA",
+          "en-GB",
+          "en-IE",
+          "en-NZ",
+          "en-US",
+          "es-ES",
+          "et-EE",
+          "eu-ES",
+          "fi-FI",
+          "fr-BE",
+          "fr-CA",
+          "fr-CH",
+          "fr-FR",
+          "he-IL",
+          "hi-IN",
+          "hr-HR",
+          "hu-HU",
+          "hy-AM",
+          "is-IS",
+          "it-CH",
+          "it-IT",
+          "ja-JP",
+          "kk-KZ",
+          "ko-KR",
+          "lt-LT",
+          "nl-BE",
+          "nl-NL",
+          "no-NO",
+          "pl-PL",
+          "pt-BR",
+          "pt-PT",
+          "ro-RO",
+          "ru-RU",
+          "sk-SK",
+          "sl-SI",
+          "sr-YU",
+          "sv-SE",
+          "tr-TR",
+          "uk-UA",
+          "zh-CN",
+          "zh-HK",
+          "zh-TW"
+        ],
+        "nullable": true,
+        "title": "Locale",
+        "type": "string",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.PeopleSchemas.Locale"
+      },
+      "Address": {
+        "description": "Address",
+        "properties": {
+          "city": {
+            "description": "City",
+            "example": "Some City",
+            "type": "string"
+          },
+          "country": {
+            "description": "Country code (ISO 3166-1 alpha-2)",
+            "example": "IS",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          },
+          "id": {
+            "description": "Address ID",
+            "example": "78868a92-553e-470d-9ae5-bc30a6655109",
+            "format": "uuid",
+            "readOnly": true,
+            "type": "string"
+          },
+          "state": {
+            "description": "State",
+            "example": "Some State",
+            "nullable": true,
+            "type": "string"
+          },
+          "street_address_line_1": {
+            "description": "Street Address Line 1",
+            "example": "Street A",
+            "type": "string"
+          },
+          "street_address_line_2": {
+            "description": "Street Address Line 2",
+            "example": "Building B",
+            "nullable": true,
+            "type": "string"
+          },
+          "street_address_line_3": {
+            "description": "Street Address Line 3",
+            "example": "Some additional data",
+            "nullable": true,
+            "type": "string"
+          },
+          "zipcode": {
+            "description": "Zipcode",
+            "example": "24320000",
+            "type": "string"
+          }
+        },
+        "title": "Address",
+        "type": "object"
+      },
+      "ChargingBankAccount": {
+        "description": "Bank account to charge the customer",
+        "properties": {
+          "bank_currency": {
+            "description": "Bank account currency code (ISO-4217 alpha-3)",
+            "example": "EUR",
+            "maxLength": 3,
+            "minLength": 3,
+            "readOnly": true,
+            "type": "string"
+          },
+          "bank_route": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BankRoute"
+              }
+            ],
+            "description": "Bank routing details for the bank account. It is required if `iban` is not set",
+            "type": "object"
+          },
+          "billing_locale": {
+            "description": "Language code (ISO 639-1) with language tag (BCP 47) for invoices and billing-related data",
+            "enum": [
+              "af-ZA",
+              "am-ET",
+              "be-BY",
+              "bg-BG",
+              "ca-ES",
+              "cs-CZ",
+              "da-DK",
+              "de-AT",
+              "de-CH",
+              "de-DE",
+              "el-GR",
+              "en-AU",
+              "en-CA",
+              "en-GB",
+              "en-IE",
+              "en-NZ",
+              "en-US",
+              "es-ES",
+              "et-EE",
+              "eu-ES",
+              "fi-FI",
+              "fr-BE",
+              "fr-CA",
+              "fr-CH",
+              "fr-FR",
+              "he-IL",
+              "hi-IN",
+              "hr-HR",
+              "hu-HU",
+              "hy-AM",
+              "is-IS",
+              "it-CH",
+              "it-IT",
+              "ja-JP",
+              "kk-KZ",
+              "ko-KR",
+              "lt-LT",
+              "nl-BE",
+              "nl-NL",
+              "no-NO",
+              "pl-PL",
+              "pt-BR",
+              "pt-PT",
+              "ro-RO",
+              "ru-RU",
+              "sk-SK",
+              "sl-SI",
+              "sr-YU",
+              "sv-SE",
+              "tr-TR",
+              "uk-UA",
+              "zh-CN",
+              "zh-HK",
+              "zh-TW"
+            ],
+            "example": "en-US",
+            "type": "string"
+          },
+          "iban": {
+            "description": "International Bank Account Number (IBAN, ISO 13616). If set, the `bank_route` will be ignored",
+            "example": "GB24MODR04007557431620",
+            "format": "^[A-Z]{2}[0-9]+$",
+            "title": "IBAN",
+            "type": "string"
+          },
+          "id": {
+            "description": "Charging bank account ID",
+            "example": "0fa1ae62-63a0-47db-a0e4-b277e84388ab",
+            "format": "uuid",
+            "readOnly": true,
+            "type": "string"
+          }
+        },
+        "title": "ChargingBankAccount",
+        "type": "object"
+      },
+      "BadRequestParameters": {
+        "description": "Bad request parameters",
+        "example": {
+          "errors": {
+            "name": ["can't be blank"],
+            "phone": ["should be at least %{count} character(s)"]
+          }
+        },
+        "properties": {
+          "errors": {
+            "description": "The errors of each field",
+            "type": "object"
+          }
+        },
+        "required": ["errors"],
+        "title": "BadRequestParameters",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.ErrorSchemas.BadRequestParameters"
+      },
+      "ListCompaniesResponse": {
+        "description": "List of companies response body",
+        "properties": {
+          "companies": {
+            "items": {
+              "$ref": "#/components/schemas/Company"
+            },
+            "type": "array"
+          }
+        },
+        "required": ["companies"],
+        "title": "ListCompaniesResponse",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.CompaniesResponses.ListCompaniesResponse"
+      },
+      "ObjectVersion": {
+        "properties": {
+          "version": {
+            "description": "Sequentially incremented number that holds the current version of the object.",
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "title": "ObjectVersion",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.HelpersSchemas.Version"
+      },
+      "CompanyResponse": {
+        "additionalProperties": false,
+        "description": "Company response body",
+        "properties": {
+          "company": {
+            "$ref": "#/components/schemas/Company"
+          }
+        },
+        "required": ["company"],
+        "title": "CompanyResponse",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.CompaniesResponses.CompanyResponse"
+      },
+      "Shareholder": {
+        "description": "Shareholder",
+        "properties": {
+          "id": {
+            "description": "Shareholder UUID. When used in the update operation, it will update the shareholder with the given id.",
+            "example": "5536420e-194b-40e7-8eba-4607fcd5a997",
+            "format": "uuid",
+            "type": "string"
+          },
+          "person": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Person"
+              }
+            ],
+            "description": "Person information. Only required if no person_id is provided. This will create a new person."
+          },
+          "person_id": {
+            "description": "Person UUID. If set, the person with the given id will be used as a shareholder. If not set, a new person will be created from the data provided",
+            "format": "uuid",
+            "type": "string"
+          },
+          "share": {
+            "description": "Decimal as string",
+            "example": "0.24",
+            "format": "^((1\\.0)|(0\\.0*[1-9][0-9]*?))$",
+            "type": "string"
+          }
+        },
+        "title": "Shareholder",
+        "type": "object"
+      },
+      "DigitalStoreScheme": {
+        "description": "Required fields for a digital store",
+        "properties": {
+          "address": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "description": "Address",
+            "example": {
+              "city": "Some City",
+              "country": "IS",
+              "id": "78868a92-553e-470d-9ae5-bc30a6655109",
+              "state": "Some State",
+              "street_address_line_1": "Street A",
+              "street_address_line_2": "Building B",
+              "street_address_line_3": "Some additional data",
+              "zipcode": "24320000"
+            },
+            "nullable": true,
+            "type": "object"
+          },
+          "store_type": {
+            "description": "Supported store type",
+            "enum": ["DIGITAL"],
+            "example": "DIGITAL",
+            "type": "string"
+          },
+          "url": {
+            "description": "URL for the store's website",
+            "example": "https://my-store.com",
+            "type": "string"
+          }
+        },
+        "required": ["store_type", "url"],
+        "title": "DigitalStoreScheme",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresSchemas.DIGITAL"
+      },
+      "CreateCompanyRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Company"
+          },
+          {
+            "properties": {
+              "charging_bank_account": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ChargingBankAccount"
+                  }
+                ],
+                "required": ["billing_locale"],
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "properties": {
+              "registered_address": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Address"
+                  }
+                ],
+                "description": "Legal business registered address",
+                "required": ["city", "country", "street_address_line_1", "zipcode"],
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "description": "Body for creating a company",
+        "required": [
+          "registered_name",
+          "registered_number",
+          "charging_bank_account",
+          "registered_address",
+          "authorizer_id",
+          "legal_structure"
+        ],
+        "title": "CreateCompanyRequest",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.CompaniesRequests.CreateCompanyRequest"
+      },
+      "RoutingSchemeForPortugal": {
+        "description": "NIB Routing Scheme for Portugal",
+        "properties": {
+          "nib": {
+            "description": "Número de identificação bancária (NIB)",
+            "example": "000201231234567890154",
+            "format": "^[0-9]{21}$",
+            "type": "string"
+          },
+          "scheme": {
+            "description": "Routing scheme of choice",
+            "example": "PT",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": ["scheme", "nib"],
+        "title": "RoutingSchemeForPortugal",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.PT"
+      },
+      "RoutingSchemeForSlovakia": {
+        "description": "Routing Scheme for Slovakia",
+        "properties": {
+          "account_number": {
+            "description": "Account number",
+            "example": "8742637541",
+            "format": "^[0-9]{10}$",
+            "type": "string"
+          },
+          "account_prefix": {
+            "description": "Account prefix (optional)",
+            "example": "19",
+            "format": "^[0-9]{0,6}$",
+            "nullable": true,
+            "type": "string"
+          },
+          "bank_code": {
+            "description": "Bank code",
+            "example": "1200",
+            "format": "^[0-9]{4}$",
+            "type": "string"
+          },
+          "scheme": {
+            "description": "Routing scheme of choice",
+            "example": "SK",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": ["scheme", "bank_code", "account_number"],
+        "title": "RoutingSchemeForSlovakia",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.SK"
+      },
+      "RoutingSchemeForGreatBritain": {
+        "description": "Routing Scheme for Great Britain",
+        "properties": {
+          "account_number": {
+            "description": "Account number",
+            "example": "57431620",
+            "format": "^[0-9]{8}$",
+            "type": "string"
+          },
+          "bank_identifier": {
+            "description": "The first four (4) letters from BIC/SWIFT code",
+            "example": "MODR",
+            "format": "^[A-Z]{4}$",
+            "type": "string"
+          },
+          "scheme": {
+            "description": "Routing scheme of choice",
+            "example": "GB",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          },
+          "sort_code": {
+            "description": "Sort code",
+            "example": "040075",
+            "format": "^[0-9]{6}$",
+            "type": "string"
+          }
+        },
+        "required": ["scheme", "account_number", "sort_code", "bank_identifier"],
+        "title": "RoutingSchemeForGreatBritain",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.GB"
+      },
+      "IBAN": {
+        "description": "International Bank Account Number (IBAN, ISO 13616). If set, the `bank_route` will be ignored",
+        "example": "GB24MODR04007557431620",
+        "format": "^[A-Z]{2}[0-9]+$",
+        "title": "IBAN",
+        "type": "string"
+      },
+      "Version": {
+        "description": "Version",
+        "properties": {
+          "change_made_by": {
+            "description": "ID of change requester",
+            "nullable": true,
+            "type": "string"
+          },
+          "changed_on": {
+            "description": "Datetime of change",
+            "format": "date-time",
+            "type": "string"
+          },
+          "changes": {
+            "description": "Dynamic: Map of all fields that changed in the object, with their respective new values",
+            "type": "object"
+          },
+          "event": {
+            "description": "Type of change [insert, update, delete]",
+            "type": "string"
+          },
+          "id": {
+            "description": "Version ID",
+            "readOnly": true,
+            "type": "integer"
+          },
+          "record_id": {
+            "description": "ID of changed object",
+            "type": "string"
+          }
+        },
+        "required": ["record_id", "event", "changed_on", "change_made_by", "changes"],
+        "title": "Version",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.VersionsSchemas.Version"
+      },
+      "UpdatePersonRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Person"
+          },
+          {
+            "$ref": "#/components/schemas/ObjectVersion"
+          }
+        ],
+        "description": "Body for updating a person",
+        "example": {
+          "middle_name": "Updated Name",
+          "version": 1
+        },
+        "title": "UpdatePersonRequest",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.PeopleRequests.UpdatePersonRequest"
+      },
+      "ListStoresResponse": {
+        "description": "List of stores response body",
+        "properties": {
+          "stores": {
+            "description": "List of Stores",
+            "items": {
+              "$ref": "#/components/schemas/Store"
+            },
+            "type": "array"
+          }
+        },
+        "required": ["stores"],
+        "title": "ListStoresResponse",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresResponses.ListStoresResponse"
+      },
+      "RoutingSchemeForHungary": {
+        "description": "Routing Scheme for Hungary",
+        "properties": {
+          "account_number": {
+            "description": "Account number",
+            "example": "117730161111101800000000",
+            "format": "^[0-9]{24}$",
+            "type": "string"
+          },
+          "scheme": {
+            "description": "Routing scheme of choice",
+            "example": "HU",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": ["scheme", "account_number"],
+        "title": "RoutingSchemeForHungary",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.HU"
+      },
+      "UpdateStoreRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Store"
+          },
+          {
+            "$ref": "#/components/schemas/ObjectVersion"
+          }
+        ],
+        "description": "Body for updating a store",
+        "example": {
+          "name": "Updated Name",
+          "version": 1
+        },
+        "title": "UpdateStoreRequest",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresRequests.UpdateStoreRequest"
+      },
+      "CreateStoreRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Store"
+          },
+          {
+            "nullable": true,
+            "properties": {
+              "charging_bank_account": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ChargingBankAccount"
+                  }
+                ],
+                "required": ["billing_locale"],
+                "type": "object"
+              }
+            },
+            "type": "object"
+          },
+          {
+            "nullable": true,
+            "properties": {
+              "delivery_address": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Address"
+                  }
+                ],
+                "required": ["city", "country", "street_address_line_1", "zipcode"],
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "description": "Body for creating a store",
+        "required": ["name", "active", "company_id", "mcc", "store_scheme"],
+        "title": "CreateStoreRequest",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresRequests.CreateStoreRequest"
+      },
+      "PersonDocumentResponse": {
+        "additionalProperties": false,
+        "description": "Person Document Response",
+        "properties": {
+          "person_document": {
+            "$ref": "#/components/schemas/PersonDocument"
+          }
+        },
+        "required": ["person_document"],
+        "title": "PersonDocumentResponse",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.PeopleResponses.PersonDocumentResponse"
+      },
+      "PhysicalStoreScheme": {
+        "description": "Required fields for a physical store",
+        "properties": {
+          "address": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Address"
+              }
+            ],
+            "description": "Address",
+            "example": {
+              "city": "Some City",
+              "country": "IS",
+              "id": "78868a92-553e-470d-9ae5-bc30a6655109",
+              "state": "Some State",
+              "street_address_line_1": "Street A",
+              "street_address_line_2": "Building B",
+              "street_address_line_3": "Some additional data",
+              "zipcode": "24320000"
+            },
+            "type": "object"
+          },
+          "store_type": {
+            "description": "Supported store type",
+            "enum": ["PHYSICAL"],
+            "example": "PHYSICAL",
+            "type": "string"
+          },
+          "url": {
+            "description": "URL for the store's website",
+            "example": "https://my-store.com",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": ["store_type", "address"],
+        "title": "PhysicalStoreScheme",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresSchemas.PHYSICAL"
+      },
+      "ListVersionsResponse": {
+        "additionalProperties": false,
+        "description": "Versions Response",
+        "example": {
+          "versions": [
+            {
+              "change_made_by": null,
+              "changed_on": "2021-04-22T14:49:29Z",
+              "changes": {
+                "authorizer_id": "ffe1cd43-1f43-47f5-afa7-438d5baef783",
+                "id": "ffe1cd43-1f43-47f5-afa7-438d5baef783",
+                "legal_structure": "LIMITED",
+                "registered_name": "Company Name",
+                "registered_number": "123456789",
+                "updated_at": "2021-04-22T14:49:29"
+              },
+              "event": "insert",
+              "id": 5,
+              "record_id": "e4626fa3-6810-4d21-ba3c-f2c5ad0d1d61"
+            }
+          ]
+        },
+        "properties": {
+          "versions": {
+            "description": "Versions",
+            "items": {
+              "$ref": "#/components/schemas/Version"
+            },
+            "type": "array"
+          }
+        },
+        "required": ["versions"],
+        "title": "ListVersionsResponse",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.VersionsResponses.ListVersionsResponse"
+      },
+      "RoutingSchemeForIceland": {
+        "description": "Routing Scheme for Iceland",
+        "properties": {
+          "account_number": {
+            "description": "Account number",
+            "example": "007654",
+            "format": "^[0-9]{6}$",
+            "type": "string"
+          },
+          "account_type": {
+            "description": "Account type",
+            "example": "26",
+            "format": "^[0-9]{2}$",
+            "type": "string"
+          },
+          "bank_code": {
+            "description": "Bank code",
+            "example": "0159",
+            "format": "^[0-9]{4}$",
+            "type": "string"
+          },
+          "kennitala": {
+            "description": "Kennitala",
+            "example": "5510730339",
+            "format": "^[0-9]{10}$",
+            "type": "string"
+          },
+          "scheme": {
+            "description": "Routing scheme of choice",
+            "example": "IS",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": ["scheme", "bank_code", "account_number", "account_type", "kennitala"],
+        "title": "RoutingSchemeForIceland",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.IS"
+      },
+      "BankRoute": {
+        "anyOf": [
+          {
+            "description": "Routing Scheme for Czech Republic",
+            "properties": {
+              "account_number": {
+                "description": "Account number",
+                "example": "2000145399",
+                "format": "^[0-9]{10}$",
+                "type": "string"
+              },
+              "account_prefix": {
+                "description": "Account prefix",
+                "example": "19",
+                "format": "^[0-9]{0,6}$",
+                "nullable": true,
+                "type": "string"
+              },
+              "bank_code": {
+                "description": "Bank code",
+                "example": "0800",
+                "format": "^[0-9]{4}$",
+                "type": "string"
+              },
+              "scheme": {
+                "description": "Routing scheme of choice",
+                "example": "CZ",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              }
+            },
+            "required": ["scheme", "bank_code", "account_number"],
+            "title": "RoutingSchemeForCzechRepublic",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.CZ"
+          },
+          {
+            "description": "Routing Scheme for Great Britain",
+            "properties": {
+              "account_number": {
+                "description": "Account number",
+                "example": "57431620",
+                "format": "^[0-9]{8}$",
+                "type": "string"
+              },
+              "bank_identifier": {
+                "description": "The first four (4) letters from BIC/SWIFT code",
+                "example": "MODR",
+                "format": "^[A-Z]{4}$",
+                "type": "string"
+              },
+              "scheme": {
+                "description": "Routing scheme of choice",
+                "example": "GB",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              },
+              "sort_code": {
+                "description": "Sort code",
+                "example": "040075",
+                "format": "^[0-9]{6}$",
+                "type": "string"
+              }
+            },
+            "required": ["scheme", "account_number", "sort_code", "bank_identifier"],
+            "title": "RoutingSchemeForGreatBritain",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.GB"
+          },
+          {
+            "description": "Routing Scheme for Croatia",
+            "properties": {
+              "account_number": {
+                "description": "Account number",
+                "example": "1863000160",
+                "format": "^[0-9]{10}$",
+                "type": "string"
+              },
+              "bank_code": {
+                "description": "Bank code",
+                "example": "1001005",
+                "format": "^[0-9]{7}$",
+                "type": "string"
+              },
+              "scheme": {
+                "description": "Routing scheme of choice",
+                "example": "HR",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              }
+            },
+            "required": ["scheme", "bank_code", "account_number"],
+            "title": "RoutingSchemeForCroatia",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.HR"
+          },
+          {
+            "description": "Routing Scheme for Hungary",
+            "properties": {
+              "account_number": {
+                "description": "Account number",
+                "example": "117730161111101800000000",
+                "format": "^[0-9]{24}$",
+                "type": "string"
+              },
+              "scheme": {
+                "description": "Routing scheme of choice",
+                "example": "HU",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              }
+            },
+            "required": ["scheme", "account_number"],
+            "title": "RoutingSchemeForHungary",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.HU"
+          },
+          {
+            "description": "Routing Scheme for Iceland",
+            "properties": {
+              "account_number": {
+                "description": "Account number",
+                "example": "007654",
+                "format": "^[0-9]{6}$",
+                "type": "string"
+              },
+              "account_type": {
+                "description": "Account type",
+                "example": "26",
+                "format": "^[0-9]{2}$",
+                "type": "string"
+              },
+              "bank_code": {
+                "description": "Bank code",
+                "example": "0159",
+                "format": "^[0-9]{4}$",
+                "type": "string"
+              },
+              "kennitala": {
+                "description": "Kennitala",
+                "example": "5510730339",
+                "format": "^[0-9]{10}$",
+                "type": "string"
+              },
+              "scheme": {
+                "description": "Routing scheme of choice",
+                "example": "IS",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              }
+            },
+            "required": ["scheme", "bank_code", "account_number", "account_type", "kennitala"],
+            "title": "RoutingSchemeForIceland",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.IS"
+          },
+          {
+            "description": "NIB Routing Scheme for Portugal",
+            "properties": {
+              "nib": {
+                "description": "Número de identificação bancária (NIB)",
+                "example": "000201231234567890154",
+                "format": "^[0-9]{21}$",
+                "type": "string"
+              },
+              "scheme": {
+                "description": "Routing scheme of choice",
+                "example": "PT",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              }
+            },
+            "required": ["scheme", "nib"],
+            "title": "RoutingSchemeForPortugal",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.PT"
+          },
+          {
+            "description": "Routing Scheme for Slovakia",
+            "properties": {
+              "account_number": {
+                "description": "Account number",
+                "example": "8742637541",
+                "format": "^[0-9]{10}$",
+                "type": "string"
+              },
+              "account_prefix": {
+                "description": "Account prefix (optional)",
+                "example": "19",
+                "format": "^[0-9]{0,6}$",
+                "nullable": true,
+                "type": "string"
+              },
+              "bank_code": {
+                "description": "Bank code",
+                "example": "1200",
+                "format": "^[0-9]{4}$",
+                "type": "string"
+              },
+              "scheme": {
+                "description": "Routing scheme of choice",
+                "example": "SK",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              }
+            },
+            "required": ["scheme", "bank_code", "account_number"],
+            "title": "RoutingSchemeForSlovakia",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.SK"
+          }
+        ],
+        "description": "Bank Route",
+        "discriminator": {
+          "mapping": {
+            "CZ": "#/components/schemas/RoutingSchemeForCzechRepublic",
+            "GB": "#/components/schemas/RoutingSchemeForGreatBritain",
+            "HR": "#/components/schemas/RoutingSchemeForCroatia",
+            "HU": "#/components/schemas/RoutingSchemeForHungary",
+            "IS": "#/components/schemas/RoutingSchemeForIceland",
+            "PT": "#/components/schemas/RoutingSchemeForPortugal",
+            "SK": "#/components/schemas/RoutingSchemeForSlovakia"
+          },
+          "propertyName": "scheme"
+        },
+        "required": ["scheme"],
+        "title": "BankRoute",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.BankRoute"
+      },
+      "StoreResponse": {
+        "additionalProperties": false,
+        "description": "Store response body",
+        "properties": {
+          "store": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Store"
+              },
+              {
+                "nullable": true,
+                "properties": {
+                  "charging_bank_account": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/ChargingBankAccount"
+                      }
+                    ],
+                    "nullable": true,
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              },
+              {
+                "properties": {
+                  "company": {
+                    "$ref": "#/components/schemas/Company"
+                  }
+                },
+                "required": ["company"],
+                "type": "object"
+              }
+            ]
+          }
+        },
+        "required": ["store"],
+        "title": "StoreResponse",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresResponses.StoreResponse"
+      },
+      "RoutingSchemeForCzechRepublic": {
+        "description": "Routing Scheme for Czech Republic",
+        "properties": {
+          "account_number": {
+            "description": "Account number",
+            "example": "2000145399",
+            "format": "^[0-9]{10}$",
+            "type": "string"
+          },
+          "account_prefix": {
+            "description": "Account prefix",
+            "example": "19",
+            "format": "^[0-9]{0,6}$",
+            "nullable": true,
+            "type": "string"
+          },
+          "bank_code": {
+            "description": "Bank code",
+            "example": "0800",
+            "format": "^[0-9]{4}$",
+            "type": "string"
+          },
+          "scheme": {
+            "description": "Routing scheme of choice",
+            "example": "CZ",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": ["scheme", "bank_code", "account_number"],
+        "title": "RoutingSchemeForCzechRepublic",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.CZ"
+      },
+      "UpdateCompanyRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Company"
+          },
+          {
+            "$ref": "#/components/schemas/ObjectVersion"
+          },
+          {
+            "properties": {
+              "shareholders": {
+                "items": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Shareholder"
+                    },
+                    {
+                      "properties": {
+                        "deleted": {
+                          "default": false,
+                          "description": "If true, removes this shareholder from the company. Bear in mind that the person is not deleted.",
+                          "type": "boolean"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  ]
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "description": "Body for updating company",
+        "example": {
+          "registered_name": "Updated Registry Name",
+          "version": 1
+        },
+        "title": "UpdateCompanyRequest",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.CompaniesRequests.UpdateCompanyRequest"
+      },
+      "RoutingSchemeForCroatia": {
+        "description": "Routing Scheme for Croatia",
+        "properties": {
+          "account_number": {
+            "description": "Account number",
+            "example": "1863000160",
+            "format": "^[0-9]{10}$",
+            "type": "string"
+          },
+          "bank_code": {
+            "description": "Bank code",
+            "example": "1001005",
+            "format": "^[0-9]{7}$",
+            "type": "string"
+          },
+          "scheme": {
+            "description": "Routing scheme of choice",
+            "example": "HR",
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": ["scheme", "bank_code", "account_number"],
+        "title": "RoutingSchemeForCroatia",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.BankRoutesSchemas.HR"
+      },
+      "StoreScheme": {
+        "anyOf": [
+          {
+            "description": "Required fields for a digital store",
+            "properties": {
+              "address": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Address"
+                  }
+                ],
+                "description": "Address",
+                "example": {
+                  "city": "Some City",
+                  "country": "IS",
+                  "id": "78868a92-553e-470d-9ae5-bc30a6655109",
+                  "state": "Some State",
+                  "street_address_line_1": "Street A",
+                  "street_address_line_2": "Building B",
+                  "street_address_line_3": "Some additional data",
+                  "zipcode": "24320000"
+                },
+                "nullable": true,
+                "type": "object"
+              },
+              "store_type": {
+                "description": "Supported store type",
+                "enum": ["DIGITAL"],
+                "example": "DIGITAL",
+                "type": "string"
+              },
+              "url": {
+                "description": "URL for the store's website",
+                "example": "https://my-store.com",
+                "type": "string"
+              }
+            },
+            "required": ["store_type", "url"],
+            "title": "DigitalStoreScheme",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresSchemas.DIGITAL"
+          },
+          {
+            "description": "Required fields for a physical store",
+            "properties": {
+              "address": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Address"
+                  }
+                ],
+                "description": "Address",
+                "example": {
+                  "city": "Some City",
+                  "country": "IS",
+                  "id": "78868a92-553e-470d-9ae5-bc30a6655109",
+                  "state": "Some State",
+                  "street_address_line_1": "Street A",
+                  "street_address_line_2": "Building B",
+                  "street_address_line_3": "Some additional data",
+                  "zipcode": "24320000"
+                },
+                "type": "object"
+              },
+              "store_type": {
+                "description": "Supported store type",
+                "enum": ["PHYSICAL"],
+                "example": "PHYSICAL",
+                "type": "string"
+              },
+              "url": {
+                "description": "URL for the store's website",
+                "example": "https://my-store.com",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": ["store_type", "address"],
+            "title": "PhysicalStoreScheme",
+            "type": "object",
+            "x-struct": "Elixir.MdmWeb.OpenApi.KYC.StoresSchemas.PHYSICAL"
+          }
+        ],
+        "description": "Supported store scheme",
+        "discriminator": {
+          "mapping": {
+            "DIGITAL": "#/components/schemas/DigitalStoreScheme",
+            "PHYSICAL": "#/components/schemas/PhysicalStoreScheme"
+          },
+          "propertyName": "store_type"
+        },
+        "required": ["store_type"],
+        "title": "StoreScheme",
+        "type": "object"
+      },
+      "CreatePersonRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Person"
+          }
+        ],
+        "description": "Body for creating a person",
+        "required": ["first_name", "last_name"],
+        "title": "CreatePersonRequest",
+        "type": "object",
+        "x-struct": "Elixir.MdmWeb.OpenApi.KYC.PeopleRequests.CreatePersonRequest"
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "in": "header",
+        "name": "x-api-key",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "#global-merchant-database-integrations @ Slack"
+    },
+    "description": "Entry point for Company & Store management. Exposes endpoints to create, update, search, view history (and more) for all of entities.",
+    "title": "KYC API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/companies": {
+      "get": {
+        "callbacks": {},
+        "description": "Search for companies.\n\nPassing an `authorizer_user_id` will filter to companies whose Authorizer match the received user ID.\nPassing a query `q` will filter by:\n- Registry Business Name\n- Registry Business Number\n- Company ID",
+        "operationId": "MdmWeb.Api.V1.KYCController.search_companies",
+        "parameters": [
+          {
+            "description": "Search query",
+            "example": "Marias Muffin",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Authorizer User ID",
+            "example": "63aa684f-c53f-48e3-8147-c08aed9eb4e6",
+            "in": "query",
+            "name": "authorizer_user_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Page number",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of results per page",
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCompaniesResponse"
+                }
+              }
+            },
+            "description": "SearchResult"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Search & List Companies",
+        "tags": ["Companies"]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Registers a company in SaltPay.",
+        "operationId": "MdmWeb.Api.V1.KYCController.create_company",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompanyRequest"
+              }
+            }
+          },
+          "description": "CreateCompanyRequest",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyResponse"
+                }
+              }
+            },
+            "description": "Company"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Register Company",
+        "tags": ["Companies"]
+      }
+    },
+    "/api/v1/companies/{company_id}": {
+      "get": {
+        "callbacks": {},
+        "description": "Shows a given company's KYC information.",
+        "operationId": "MdmWeb.Api.V1.KYCController.show_company",
+        "parameters": [
+          {
+            "description": "Company ID",
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyResponse"
+                }
+              }
+            },
+            "description": "CompanyResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Show Company",
+        "tags": ["Companies"]
+      },
+      "patch": {
+        "callbacks": {},
+        "description": "Updates a given company's KYC information.",
+        "operationId": "MdmWeb.Api.V1.KYCController.update_company",
+        "parameters": [
+          {
+            "description": "Company ID",
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompanyRequest"
+              }
+            }
+          },
+          "description": "UpdateCompanyRequest",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyResponse"
+                }
+              }
+            },
+            "description": "CompanyResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Update Company",
+        "tags": ["Companies"]
+      }
+    },
+    "/api/v1/companies/{company_id}/history": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieves all modifications done to a company.",
+        "operationId": "MdmWeb.Api.V1.KYCController.get_company_history",
+        "parameters": [
+          {
+            "description": "Company ID",
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Page number",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of results per page",
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVersionsResponse"
+                }
+              }
+            },
+            "description": "HistoricalCompanyData"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Show Company History",
+        "tags": ["Companies"]
+      }
+    },
+    "/api/v1/documents": {
+      "post": {
+        "callbacks": {},
+        "description": "Upload Person Document",
+        "operationId": "MdmWeb.Api.V1.KYCController.upload_person_document",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadPersonDocumentRequest"
+              }
+            }
+          },
+          "description": "UploadPersonDocumentRequest",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonDocumentResponse"
+                }
+              }
+            },
+            "description": "PersonDocumentResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Upload Person Document",
+        "tags": ["People"]
+      }
+    },
+    "/api/v1/people": {
+      "post": {
+        "callbacks": {},
+        "description": "Registers a Person",
+        "operationId": "MdmWeb.Api.V1.KYCController.create_person",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePersonRequest"
+              }
+            }
+          },
+          "description": "CreatePersonRequest",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonResponse"
+                }
+              }
+            },
+            "description": "Person"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Register Person",
+        "tags": ["People"]
+      }
+    },
+    "/api/v1/people/{person_id}": {
+      "delete": {
+        "callbacks": {},
+        "description": "Deletes a Person",
+        "operationId": "MdmWeb.Api.V1.KYCController.remove_person",
+        "parameters": [
+          {
+            "description": "Person ID",
+            "in": "path",
+            "name": "person_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonResponse"
+                }
+              }
+            },
+            "description": "Person"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Delete Person",
+        "tags": ["People"]
+      },
+      "get": {
+        "callbacks": {},
+        "description": "Show Person by given ID",
+        "operationId": "MdmWeb.Api.V1.KYCController.show_person",
+        "parameters": [
+          {
+            "description": "Person ID",
+            "in": "path",
+            "name": "person_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonResponse"
+                }
+              }
+            },
+            "description": "PersonResponse"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Show Person",
+        "tags": ["People"]
+      },
+      "patch": {
+        "callbacks": {},
+        "description": "Update an Person",
+        "operationId": "MdmWeb.Api.V1.KYCController.update_person",
+        "parameters": [
+          {
+            "description": "Person ID",
+            "in": "path",
+            "name": "person_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePersonRequest"
+              }
+            }
+          },
+          "description": "UpdatePersonRequest",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonResponse"
+                }
+              }
+            },
+            "description": "Person"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Update Person",
+        "tags": ["People"]
+      }
+    },
+    "/api/v1/stores": {
+      "get": {
+        "callbacks": {},
+        "description": "Lists stores, filtered by the company_id or search query, if present.\n\nPassing a query will filter by:\n- `Store DBA name`\n- `Store ID`\n- `Store Short ID`\n- `Company Registry Name`\n- `Company Registry Number`",
+        "operationId": "MdmWeb.Api.V1.KYCController.search_stores",
+        "parameters": [
+          {
+            "description": "Search query",
+            "example": "Marias Muffin",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Company ID",
+            "example": "c1862c76-e79b-4ede-ba12-d1e4d9ea16d9",
+            "in": "query",
+            "name": "company_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Page number",
+            "example": 1,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of results per page",
+            "example": 10,
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListStoresResponse"
+                }
+              }
+            },
+            "description": "Search for stores"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Search & List Stores",
+        "tags": ["Stores"]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Registers a store in SaltPay.",
+        "operationId": "MdmWeb.Api.V1.KYCController.create_store",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStoreRequest"
+              }
+            }
+          },
+          "description": "CreateStoreRequest",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreResponse"
+                }
+              }
+            },
+            "description": "StoreResponse"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Register Store",
+        "tags": ["Stores"]
+      }
+    },
+    "/api/v1/stores/{store_id}": {
+      "get": {
+        "callbacks": {},
+        "description": "Shows a given store's KYC information.",
+        "operationId": "MdmWeb.Api.V1.KYCController.show_store",
+        "parameters": [
+          {
+            "description": "Store id or store short id",
+            "in": "path",
+            "name": "store_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreResponse"
+                }
+              }
+            },
+            "description": "Store"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Show Store",
+        "tags": ["Stores"]
+      },
+      "patch": {
+        "callbacks": {},
+        "description": "Updates a given store's KYC information.",
+        "operationId": "MdmWeb.Api.V1.KYCController.update_store",
+        "parameters": [
+          {
+            "description": "Store id or store short id",
+            "in": "path",
+            "name": "store_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStoreRequest"
+              }
+            }
+          },
+          "description": "StoreRequest",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreResponse"
+                }
+              }
+            },
+            "description": "Store"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestParameters"
+                }
+              }
+            },
+            "description": "BadRequestParameters"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Update Store",
+        "tags": ["Stores"]
+      }
+    },
+    "/api/v1/stores/{store_id}/history": {
+      "get": {
+        "callbacks": {},
+        "description": "Retrieves all modifications done to a store.",
+        "operationId": "MdmWeb.Api.V1.KYCController.get_store_history",
+        "parameters": [
+          {
+            "description": "Store ID or store short id",
+            "in": "path",
+            "name": "store_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Page number",
+            "example": 1,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Number of results per page",
+            "example": 10,
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVersionsResponse"
+                }
+              }
+            },
+            "description": "HistoricalStoreData"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "NotFound"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "summary": "Show Store History",
+        "tags": ["Stores"]
+      }
+    }
+  },
+  "security": [
+    {
+      "Authorization": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "variables": {}
+    }
+  ],
+  "tags": [
+    {
+      "description": "API for company management. Create, update, and delete companies",
+      "name": "Companies"
+    },
+    {
+      "description": "API for store management. Create, update, and delete stores",
+      "name": "Stores"
+    },
+    {
+      "description": "API for person management. Create, update, and delete people",
+      "name": "People"
+    }
+  ]
+}
