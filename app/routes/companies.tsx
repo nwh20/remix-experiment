@@ -7,8 +7,13 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Menu,
 } from "@chakra-ui/react";
 import axios from "axios";
+import React from "react";
 import {
   Form,
   useLoaderData,
@@ -16,6 +21,7 @@ import {
   Link,
   Outlet,
   useSearchParams,
+  useSubmit,
 } from "remix";
 import { components } from "~/types/kyc";
 
@@ -34,27 +40,27 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
   const data = useLoaderData<components["schemas"]["ListCompaniesResponse"]>();
-  console.log(data.companies);
-
+  const submit = useSubmit();
   const [searchParams] = useSearchParams();
-  console.log(searchParams);
 
+  const handleChange: React.FormEventHandler = (e) => {
+    submit(e.currentTarget, { replace: true });
+  };
   return (
-    <SimpleGrid columns={2}>
-      <Center as={Container} h="50vh">
-        <Box as={Form} method="get" minW="30ch">
-          <Input
-            type="text"
-            placeholder="input text!"
-            name="search"
-            minLength={3}
-            isRequired
-          />
-        </Box>
-        <Stack>
+    <SimpleGrid onChange={handleChange} as={Form} method="get" columns={2}>
+      <Input
+        type="text"
+        placeholder="input text!"
+        name="search"
+        minLength={3}
+        isRequired
+      />
+      <Menu onOpen={() => {}} isOpen>
+        <MenuButton as="div" minW="30ch"></MenuButton>
+        <MenuList>
           {data.companies.map((company) => {
             return (
-              <Button
+              <MenuItem
                 as={Link}
                 key={company.id}
                 to={`/companies/${company.id}?search=${searchParams.get(
@@ -62,11 +68,11 @@ export default function Index() {
                 )}`}
               >
                 {company.registered_name}
-              </Button>
+              </MenuItem>
             );
           })}
-        </Stack>
-      </Center>
+        </MenuList>
+      </Menu>
       <Outlet />
     </SimpleGrid>
   );
